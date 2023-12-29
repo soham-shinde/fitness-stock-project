@@ -72,12 +72,16 @@ public class ProductController {
         String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
         try {
-            Resource resource = resourceLoader.getResource("classpath:static/images/product/");
-            Path = resource.getFile().getAbsolutePath();
+            if (resourceLoader != null) {
+                Resource resource = resourceLoader.getResource("classpath:static/images/product/");
+                path = resource.getFile().getAbsolutePath();
 
-            // Check if the directory exists, if not, create it
-            if (!resource.exists() && !resource.getFile().mkdirs()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
+                // Check if the directory exists, if not, create it
+                if (!resource.exists() && !resource.getFile().mkdirs()) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ResourceLoader is null!");
             }
         } catch (IOException e) {
             e.printStackTrace();
