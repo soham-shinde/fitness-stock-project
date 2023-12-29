@@ -74,7 +74,7 @@ public class ProductController {
         try {
             if (resourceLoader != null) {
                 Resource resource = resourceLoader.getResource("classpath:static/images/product/");
-                path = resource.getFile().getAbsolutePath();
+                Path = resource.getFile().getAbsolutePath();
 
                 // Check if the directory exists, if not, create it
                 if (!resource.exists() && !resource.getFile().mkdirs()) {
