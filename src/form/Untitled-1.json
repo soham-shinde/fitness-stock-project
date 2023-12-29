@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "planstrainer": 1,
+    "plansPurchasedplans": [
+        2
+    ],
+    "price": 1049,
+    "features": "Feature 1: Personalized Training Plans\nFeature 2: Group Fitness Classes\nFeature 3: Nutritional Guidance\nFeature 4: Access to Premium Equipment\nFeature 5: Progress Tracking",
+    "duration": 1,
+    "name": "Basic Membership",
+    "type": "silver"
+}
