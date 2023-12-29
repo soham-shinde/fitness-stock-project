@@ -35,7 +35,7 @@ import com.fitsta.fitsta.Service.ProductServices;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
-
+    private ResourceLoader resourceLoader;
     @Autowired
     private ProductServices productServices;
 
