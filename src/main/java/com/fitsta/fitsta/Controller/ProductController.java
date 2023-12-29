@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,20 +71,20 @@ public class ProductController {
         String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
         try {
-            Path = new ClassPathResource("static/images/product/").getFile().getAbsolutePath();
-            Path directoryPath = Paths.get(Path);
-
-            // Check if the directory exists, if not, create it
+            Path directoryPath = Paths.get("static/images/product/");
             if (!Files.exists(directoryPath)) {
                 try {
                     Files.createDirectories(directoryPath);
-                    System.out.println("Directory created: " + Path);
+                    System.out.println("Directory created: " + path);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Failed to create directory: " + Path);
+                            .body("Failed to create directory: " + path);
                 }
             }
+            Path = new ClassPathResource("static/images/product/").getFile().getAbsolutePath();
+            
+            
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Path not found!");
