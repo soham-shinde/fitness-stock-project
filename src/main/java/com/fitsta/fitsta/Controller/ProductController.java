@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+
 import com.fitsta.fitsta.Component.Validation;
 import com.fitsta.fitsta.DTO.UpdateProductRequest;
 import com.fitsta.fitsta.Entity.Product;
@@ -35,7 +34,7 @@ import com.fitsta.fitsta.Service.ProductServices;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
-    private ResourceLoader resourceLoader;
+
     @Autowired
     private ProductServices productServices;
 
@@ -72,16 +71,19 @@ public class ProductController {
         String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
         try {
-            if (resourceLoader != null) {
-                Resource resource = resourceLoader.getResource("classpath:static/images/product/");
-                Path = resource.getFile().getAbsolutePath();
+            Path = new ClassPathResource("static/images/product/").getFile().getAbsolutePath();
+            Path directoryPath = Paths.get(Path);
 
-                // Check if the directory exists, if not, create it
-                if (!resource.exists() && !resource.getFile().mkdirs()) {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
+            // Check if the directory exists, if not, create it
+            if (!Files.exists(directoryPath)) {
+                try {
+                    Files.createDirectories(directoryPath);
+                    System.out.println("Directory created: " + Path);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Failed to create directory: " + Path);
                 }
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ResourceLoader is null!");
             }
         } catch (IOException e) {
             e.printStackTrace();
