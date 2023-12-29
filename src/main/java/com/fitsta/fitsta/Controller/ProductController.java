@@ -34,27 +34,28 @@ import com.fitsta.fitsta.Service.ProductServices;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
-    
+
     @Autowired
     private ProductServices productServices;
 
     @Autowired
     private Validation validation;
 
-
     @PostMapping("/create")
     public ResponseEntity<String> createProduct(
-        @RequestParam("Id") Integer id,
-        @RequestParam("Name") String name,
-        @RequestParam("Image1") MultipartFile image1,
-        @RequestParam("Image2") MultipartFile image2,
-        @RequestParam("Image3") MultipartFile image3,
-        @RequestParam("Image4") MultipartFile image4,
-        @RequestParam("Description") String description,
-        @RequestParam("ProductPrice") String productPrice,
-        @RequestHeader(name = "Token", required = true) String token){
+            @RequestParam("Id") Integer id,
+            @RequestParam("Name") String name,
+            @RequestParam("Image1") MultipartFile image1,
+            @RequestParam("Image2") MultipartFile image2,
+            @RequestParam("Image3") MultipartFile image3,
+            @RequestParam("Image4") MultipartFile image4,
+            @RequestParam("Description") String description,
+            @RequestParam("ProductPrice") String productPrice,
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidProduct(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidProduct(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         Product newProduct = new Product();
         newProduct.setId(id);
@@ -72,6 +73,16 @@ public class ProductController {
         try {
             Path = new ClassPathResource("static/images/product/").getFile().getAbsolutePath();
             // System.out.println(Path);
+            File directory = new File(Path);
+
+            // Check if the directory exists, if not, create it
+            if (!directory.exists()) {
+                if (directory.mkdirs()) {
+                    System.out.println("Directory created: " + Path);
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Path not found!");
@@ -79,126 +90,133 @@ public class ProductController {
 
         if (image1 != null) {
             try {
-                Files.copy(image1.getInputStream(), Paths.get(Path + File.separator + currTime + "_" +  image1.getOriginalFilename()),
-                StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(image1.getInputStream(),
+                        Paths.get(Path + File.separator + currTime + "_" + image1.getOriginalFilename()),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
-            newProduct.setImage1(ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/product/"+ currTime +"_" + image1.getOriginalFilename()).toUriString());
+            newProduct.setImage1(ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/images/product/" + currTime + "_" + image1.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage1("");
         }
 
         if (image2 != null) {
             try {
-                Files.copy(image2.getInputStream(), Paths.get(Path + File.separator + currTime + "_" + image2.getOriginalFilename()),
-                StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(image2.getInputStream(),
+                        Paths.get(Path + File.separator + currTime + "_" + image2.getOriginalFilename()),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
-            newProduct.setImage2(ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/product/"+currTime+"_" + image2.getOriginalFilename()).toUriString());
+            newProduct.setImage2(ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/images/product/" + currTime + "_" + image2.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage2("");
         }
 
         if (image3 != null) {
             try {
-                Files.copy(image3.getInputStream(), Paths.get(Path + File.separator + currTime + "_" + image3.getOriginalFilename()),
-                StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(image3.getInputStream(),
+                        Paths.get(Path + File.separator + currTime + "_" + image3.getOriginalFilename()),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
-            newProduct.setImage3(ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/product/"+currTime+"_" + image3.getOriginalFilename()).toUriString());
+            newProduct.setImage3(ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/images/product/" + currTime + "_" + image3.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage3("");
         }
 
         if (image4 != null) {
             try {
-                Files.copy(image4.getInputStream(), Paths.get(Path + File.separator + currTime + "_" + image4.getOriginalFilename()),
-                StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(image4.getInputStream(),
+                        Paths.get(Path + File.separator + currTime + "_" + image4.getOriginalFilename()),
+                        StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
-            newProduct.setImage4(ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/product/"+currTime+"_" + image4.getOriginalFilename()).toUriString());
+            newProduct.setImage4(ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/images/product/" + currTime + "_" + image4.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage4("");
         }
 
         String result = productServices.createProduct(newProduct);
 
-        if(result.equals("Success")){
+        if (result.equals("Success")) {
             return ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\"Operation successful.\"}");
-        }
-        else{
+        } else {
             System.out.println("Error while new product creation : " + result);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"Failed to create new product!\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"Error\":\"Failed to create new product!\"}");
         }
 
     }
-    
 
     @PutMapping("/update")
     public ResponseEntity<String> updateProduct(
-        @RequestBody UpdateProductRequest recProduct,
-        @RequestHeader(name = "Token", required = true) String token){
+            @RequestBody UpdateProductRequest recProduct,
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidProduct(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidProduct(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         String result = productServices.updateProduct(recProduct);
 
-        if(result.equals("Success")){
+        if (result.equals("Success")) {
             return ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\"Operation successful.\"}");
-        }
-        else{
+        } else {
             System.out.println("Error while updating product : " + result);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"Failed to update product!\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"Error\":\"Failed to update product!\"}");
         }
 
     }
-    
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") Integer id) {
 
         Product gotProduct = this.productServices.getProduct(id);
-        if (gotProduct != null){
+        if (gotProduct != null) {
             return ResponseEntity.ok(gotProduct);
-        }
-        else{
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Integer id, @RequestHeader(name = "Token", required = true) String token){
-
-        if(!validation.isValidProduct(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
-        
-        String result = this.productServices.deleteProduct(id);
-
-        if(result.equals("Success")){
-            return ResponseEntity.status(HttpStatus.OK).body("Product and associated orders deleted successfully.");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to delete product and associated orders!");
-        }
-    }
-
-
-    @GetMapping("/list")
-    public ResponseEntity<List<Product>> listProducts(){
-        List<Product> productsList = this.productServices.listProducts();
-        if(productsList != null){
-            return ResponseEntity.ok(productsList);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") Integer id,
+            @RequestHeader(name = "Token", required = true) String token) {
+
+        if (!validation.isValidProduct(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String result = this.productServices.deleteProduct(id);
+
+        if (result.equals("Success")) {
+            return ResponseEntity.status(HttpStatus.OK).body("Product and associated orders deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to delete product and associated orders!");
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Product>> listProducts() {
+        List<Product> productsList = this.productServices.listProducts();
+        if (productsList != null) {
+            return ResponseEntity.ok(productsList);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 }

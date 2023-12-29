@@ -33,7 +33,7 @@ import com.fitsta.fitsta.Service.TrainerServices;
 @RestController
 @RequestMapping("/api/trainer")
 public class TrainerController {
-    
+
     @Autowired
     private TrainerServices trainerServices;
 
@@ -41,37 +41,39 @@ public class TrainerController {
     private Validation validation;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Trainer> getTrainer(@PathVariable("id") Integer id, @RequestHeader(name = "Token", required = true) String token) {
+    public ResponseEntity<Trainer> getTrainer(@PathVariable("id") Integer id,
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidProduct(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidProduct(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         Trainer gotTrainer = this.trainerServices.getTrainer(id);
-        if (gotTrainer != null){
+        if (gotTrainer != null) {
             return ResponseEntity.ok(gotTrainer);
-        }
-        else{
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
- 
 
     @PostMapping("/create")
     public ResponseEntity<String> createTrainer(
-        @RequestParam(value = "id") Integer id,
-        @RequestParam(value = "name", required = true) String name,
-        @RequestParam(value = "dob") String dob,
-        @RequestParam(value = "gender") String gender,
-        @RequestParam(value = "contactno") String contactno,
-        @RequestParam(name = "image") MultipartFile img,
-        @RequestParam(value = "specialization") String specialization,
-        @RequestParam(value = "experience") String experience,
-        @RequestParam(value = "username", required = true) String username,
-        @RequestParam(value = "password", required = true) String password,
+            @RequestParam(value = "id") Integer id,
+            @RequestParam(value = "name", required = true) String name,
+            @RequestParam(value = "dob") String dob,
+            @RequestParam(value = "gender") String gender,
+            @RequestParam(value = "contactno") String contactno,
+            @RequestParam(name = "image") MultipartFile img,
+            @RequestParam(value = "specialization") String specialization,
+            @RequestParam(value = "experience") String experience,
+            @RequestParam(value = "username", required = true) String username,
+            @RequestParam(value = "password", required = true) String password,
 
-        @RequestHeader(name = "Token", required = true) String token
-    ){
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidProduct(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidProduct(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         Trainer newTrainer = new Trainer();
 
@@ -79,7 +81,9 @@ public class TrainerController {
         newTrainer.setName(name);
         try {
             newTrainer.setDob(new SimpleDateFormat("yy-dd-MM").parse(dob));
-        } catch (ParseException e) {e.printStackTrace();}
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         newTrainer.setGender(gender);
         newTrainer.setContactno(contactno);
@@ -88,73 +92,87 @@ public class TrainerController {
         newTrainer.setUsername(username);
         newTrainer.setPassword(password);
 
-        if(img.getSize() == 0 && id!=0){
+        if (img.getSize() == 0 && id != 0) {
             newTrainer.setImage(this.trainerServices.getTrainer(id).getImage());
-        }
-        else{
+        } else {
             String Path = "";
             String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
             try {
                 Path = new ClassPathResource("static/images/trainer/").getFile().getAbsolutePath();
+                File directory = new File(Path);
+
+                // Check if the directory exists, if not, create it
+                if (!directory.exists()) {
+                    if (directory.mkdirs()) {
+                        System.out.println("Directory created: " + Path);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Failed to create directory!");
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Path not found!");
             }
             if (img != null) {
                 try {
-                    Files.copy(img.getInputStream(), Paths.get(Path + File.separator + currTime + "_" +  img.getOriginalFilename()),
-                    StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(img.getInputStream(),
+                            Paths.get(Path + File.separator + currTime + "_" + img.getOriginalFilename()),
+                            StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
                 }
-                newTrainer.setImage(ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/trainer/"+ currTime +"_" + img.getOriginalFilename()).toUriString());
+                newTrainer.setImage(ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/images/trainer/" + currTime + "_" + img.getOriginalFilename()).toUriString());
             } else {
                 newTrainer.setImage("");
             }
         }
 
-
         String result = trainerServices.createTrainer(newTrainer);
 
-        if(result.equals("Success")){
+        if (result.equals("Success")) {
             return ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\"Operation successful.\"}");
-        }
-        else{
+        } else {
             System.out.println("Error while new trainer creation : " + result);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"Failed to create new trainer!\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"Error\":\"Failed to create new trainer!\"}");
         }
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTrainer(@PathVariable("id") Integer id, @RequestHeader(name = "Token", required = true) String token){
+    public ResponseEntity<String> deleteTrainer(@PathVariable("id") Integer id,
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidTrainer(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidTrainer(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         String result = this.trainerServices.deleteTrainer(id);
 
-        if(result.equals("Success")){
+        if (result.equals("Success")) {
             return ResponseEntity.status(HttpStatus.OK).body("Trainer and associated plans deleted successfully.");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to delete trainer and associated plans!");
         }
     }
 
-
     @GetMapping("/list")
-    public ResponseEntity<List<TrainerListRequest>> listTrainers(@RequestHeader(name = "Token", required = true) String token){
+    public ResponseEntity<List<TrainerListRequest>> listTrainers(
+            @RequestHeader(name = "Token", required = true) String token) {
 
-        if(!validation.isValidTrainer(token)){return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();}
+        if (!validation.isValidTrainer(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         List<TrainerListRequest> trainersList = this.trainerServices.listTrainers();
-        if(trainersList != null){
+        if (trainersList != null) {
             return ResponseEntity.ok(trainersList);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 
 }
