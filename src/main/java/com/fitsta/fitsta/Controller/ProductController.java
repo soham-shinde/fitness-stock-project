@@ -67,13 +67,13 @@ public class ProductController {
         newProduct.setDescription(description);
         newProduct.setProductPrice(productPrice);
 
-        String Path = "";
+        String Path = "static/images/product/";
         String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
         try {
             
             // System.out.println(Path);
-            File directory = new File("static/images/product/");
+            File directory = new File(Path);
 
             // Check if the directory exists, if not, create it
             if (!directory.exists()) {
@@ -83,7 +83,6 @@ public class ProductController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
                 }
             }
-            Path = new ClassPathResource("static/images/product/").getFile().getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Path not found!");
