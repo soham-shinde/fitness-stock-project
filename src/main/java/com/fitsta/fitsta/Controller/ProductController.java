@@ -70,7 +70,7 @@ public class ProductController {
         String Path = "static/images/product/";
         String currTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
-        try {
+       
             
             // System.out.println(Path);
             File directory = new File(Path);
@@ -83,11 +83,7 @@ public class ProductController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Path not found!");
-        }
-
+    
         if (image1 != null) {
             try {
                 Files.copy(image1.getInputStream(),
