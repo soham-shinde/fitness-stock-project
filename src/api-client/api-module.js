@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const url = 'https://fitness-stock.onrender.com';
+const url = 'https://psychic-guide-v7q95g5x4w7hp6j-8080.app.github.dev';
 
 export async function verifyUser(email, password, type) {
     try {

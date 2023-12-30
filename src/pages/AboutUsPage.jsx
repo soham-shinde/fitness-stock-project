@@ -24,30 +24,16 @@ function About() {
         <h3>Meet Our Team</h3>
         <div className="owner-cards">
             <div className="owner-card">
-                <img src="/img/photos1.jpg" alt="Owner 1"/>
-                <h4>John Smith</h4>
-                <p>Co-Founder</p>
+                <img src="/img/profile.jpg" alt="Owner 1"/>
+                <h4>Soham Shinde</h4>
+                <p>Developer</p>
             </div>
             <div className="owner-card">
-                <img src="/img/photos2.jpg" alt="Owner 1"/>
-                <h4>John Smith</h4>
-                <p>Co-Founder</p>
+                <img src="/img/profile.jpg" alt="Owner 1"/>
+                <h4>Om Vastre</h4>
+                <p>Developer</p>
             </div>
-            <div className="owner-card">
-                <img src="/img/photos3.jpg" alt="Owner 1"/>
-                <h4>John Smith</h4>
-                <p>Co-Founder</p>
-            </div>
-            <div className="owner-card">
-                <img src="/img/photos4.jpg" alt="Owner 1"/>
-                <h4>John Smith</h4>
-                <p>Co-Founder</p>
-            </div>
-            <div className="owner-card">
-                <img src="/img/photos5.jpg" alt="Owner 1"/>
-                <h4>John Smith</h4>
-                <p>Co-Founder</p>
-            </div>
+         
            
         </div>
     </div>
