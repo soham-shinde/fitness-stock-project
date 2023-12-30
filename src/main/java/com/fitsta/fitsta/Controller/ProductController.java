@@ -78,7 +78,7 @@ public class ProductController {
             // Check if the directory exists, if not, create it
             if (!directory.exists()) {
                 if (directory.mkdirs()) {
-                    System.out.println("Directory created: " + Path);
+                    System.out.println("Directory created: " + directory.getAbsolutePath());
                 } else {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory!");
                 }
