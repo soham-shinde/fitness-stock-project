@@ -94,7 +94,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
             newProduct.setImage1(ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/images/product/" + currTime + "_" + image1.getOriginalFilename()).toUriString());
+            .path("/images/product/").path(""+ currTime + "_" + image1.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage1("");
         }
@@ -109,7 +109,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
             newProduct.setImage2(ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/images/product/" + currTime + "_" + image2.getOriginalFilename()).toUriString());
+            .path("/images/product/").path(""+ currTime + "_" + image2.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage2("");
         }
@@ -139,7 +139,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image!");
             }
             newProduct.setImage4(ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/images/product/" + currTime + "_" + image4.getOriginalFilename()).toUriString());
+                    .path("/images/product/").path(""+ currTime + "_" + image4.getOriginalFilename()).toUriString());
         } else {
             newProduct.setImage4("");
         }
